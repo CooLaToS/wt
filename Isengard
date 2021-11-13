@@ -1,3 +1,5 @@
+### Write up for https://hackmyvm.eu/machines/machine.php?vm=Isengard ###
+
 nmap -v -T4 -p- -sC -sV -oN nmap.log $ip  
 
 firefox $ip
