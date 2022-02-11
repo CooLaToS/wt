@@ -32,10 +32,12 @@ john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
 password : b******s
 
 checking for sudo -l but command not found
+
 its linpeas time
 
 //on new terminal 
 cd ~Downloads
+
 python3 -m http.server 80
 
 //on the terminal that we are loged in as jack
@@ -56,6 +58,7 @@ su helder
 //we are in
 
 cd
+
 cat user.txt ( user flag)
 
 //we got user flag lets try to get root flag
