@@ -137,3 +137,6 @@ cat root.txt
 root@karate:~# id; hostname
 uid=0(root) gid=0(root) groups=0(root)
 karate
+
+
+As an addition you can escalate from chuck-norris to root with dirtypipe
