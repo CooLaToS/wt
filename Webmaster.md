@@ -1,4 +1,4 @@
-<h1 align="center"> Webmaster-HMV: <a href="https://downloads.hackmyvm.eu/webmaster.zip">Webmaster</a></h1/>
+<h1 align="center"> Webmaster-HMV: <a href="https://hackmyvm.eu/machines/machine.php?vm=webmaster">Webmaster</a></h1/>
 
 
 
