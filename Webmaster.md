@@ -97,11 +97,11 @@ by Ben "epi" Risher 🤓                 ver: 2.7.1
 ## HTTP
 Visiting the website we see an image stating that the 3rd user stores his password in TXT.
 After inspecting the page source we found :
-
+```console
  <img src="comic.png" alt="comic"> 
 <!--webmaster.hmv-->
 That means we have to add this domain to our hostfile
-
+```
 ```console
 ┌──(coolatos㉿CooLaToS)-[~/HMV/webmaster]
 └─$ sudo sh -c "echo '10.1.1.25     webmaster.hmv' >> /etc/hosts"
