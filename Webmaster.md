@@ -233,7 +233,7 @@ uid=1000(john) gid=1000(john) groups=1000(john),24(cdrom),25(floppy),29(audio),3
 [!] You need to execute the exploit as www-data user! Exiting.
 ```
 
-#Reverse Shell
+## Reverse Shell
 Since we have access to /var/www/html lets try to upload a RS and get this www-data user.
 I personaly use Pentest monkey.
 
