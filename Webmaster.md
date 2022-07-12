@@ -1,12 +1,7 @@
 ---
-Title: Write up for https://hackmyvm.eu/machines/machine.php?vm=Webmaster 
-date: 12/07/2022 
+Title: Write up for <h4 align="center"> Webmaster-HMV <a href="https://downloads.hackmyvm.eu/webmaster.zip">Webmaster</a></h4/>
+Date: 12/07/2022 
 ---
-<h1 align="center" style="font-size:30px;">
-  <br>
-  <a href="https://downloads.hackmyvm.eu/webmaster.zip">Webmaster</a>
-  <br>
-</h1>
 
 
 ## Net Discover & NMAP
