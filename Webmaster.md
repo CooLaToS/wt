@@ -100,8 +100,8 @@ After inspecting the page source we found :
 ```console
  <img src="comic.png" alt="comic"> 
 <!--webmaster.hmv-->
-That means we have to add this domain to our hostfile
 ```
+That means we have to add this domain to our hostfile
 ```console
 ┌──(coolatos㉿CooLaToS)-[~/HMV/webmaster]
 └─$ sudo sh -c "echo '10.1.1.25     webmaster.hmv' >> /etc/hosts"
@@ -174,6 +174,7 @@ Nginx (Debian Based Distros + Gentoo) - 'logrotate' Local Privilege Escalation  
 ```
 
 ## Upload the exploit to the machine.
+```console
 ──(coolatos㉿CooLaToS)-[~/HMV/webmaster]
 └─$ python3 -m http.server 80
 Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ..
