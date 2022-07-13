@@ -102,6 +102,7 @@ The site is not yet repaired. Technicians are working on it by connecting with o
 100  1876  100  1876    0     0  1338k      0 --:--:-- --:--:-- --:--:-- 1832k
 ```
 P.S the user jack can be found from the vm when you boot it.
+ ```bash
  ┌──(coolatos㉿CooLaToS)-[~/HMV/Ripper]
 └─$ chmod 600 id_rsa 
 ┌──(coolatos㉿CooLaToS)-[~/HMV/Ripper]
@@ -163,8 +164,10 @@ helder@ripper:/tmp$
  The password is the same for both users
 
 ##First Flag
+```bash
 helder@ripper:~$ls
 user.txt
+```
 ##More Enumeration
  I tried again linpeas without but nothing special found
  Lets try pspy64
