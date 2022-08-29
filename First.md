@@ -240,5 +240,8 @@ Resolving deltas: 100% (15/15), done.
 ┌──(coolatos㉿CooLaToS)-[~/HMV/First]
 └─$ cd lxd-alpine-builder          
 ┌──(coolatos㉿CooLaToS)-[~/HMV/First/lxd-alpine-builder]
-└─$ sudo apt update && sudo apt install -y git golang-go debootstrap rsync gpg squashfs-tools
+└─$ sed -i 's,yaml_path="latest-stable/releases/$apk_arch/latest-releases.yaml",yaml_path="v3.8/releases/$apk_arch/latest-releases.yaml",' build-alpine
+┌──(coolatos㉿CooLaToS)-[~/HMV/First/lxd-alpine-builder]
+└─$ sudo ./build-alpine -a i686
+
 
