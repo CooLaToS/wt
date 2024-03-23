@@ -216,7 +216,7 @@ PGh0bWw+Cjxib2R5PgoKPGgyPkxvY2FsIEZpbGUgSW5jbHVzaW9uIFZ1bG5lcmFiaWxpdHk8L2gyPgoK
 
 ```
 
-Lets Decode this base64
+Lets Decode that
 
 ```zsh
 ┌──(cool㉿kali-i7)-[~/HMV/quick2]
