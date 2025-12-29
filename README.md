@@ -26,4 +26,6 @@
 - [Webmaster](Webmaster.md)
 - [Ripper](<Write up for ripper.md>)
 - [Gameshell](Gameshell.md)
+- [PDF](PDF.md)
+- [Victorique](Victorique.md)
 
