@@ -31,3 +31,5 @@
 - [React](React.md)
 - [Hunter](Hunter.md)
 - [Democracy](Democracy.md)
+- [SysadminNEW](Sysadmin.md)
+- [Skid](Skid.md)
