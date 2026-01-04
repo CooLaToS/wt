@@ -306,7 +306,7 @@ with open(pwfile) as f:
 print("[!] No password worked")
 victorique@Victorique:/tmp/findings$ 
 ```
-```
+
 I then tested them via a quick `su` brute helper :
 
 ```zsh
