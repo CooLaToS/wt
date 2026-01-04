@@ -30,3 +30,4 @@
 - [Victorique](Victorique.md)
 - [React](React.md)
 - [Hunter](Hunter.md)
+- [Democracy](Democracy.md)
