@@ -338,7 +338,7 @@ From there, I used the same `img2txt.py` tool on `root.png` to reveal the flag:
 ```zsh
 root@Victorique:~# python3 /opt/img2txt.py --input root.png --output flag.txt --mode simple --num_cols 700
 root@Victorique:~# cat flag.txt
-# (Zoom out to read the full flag clearly)
-```
 
+```
+# (Zoom out to read the full flag clearly)
 ---
