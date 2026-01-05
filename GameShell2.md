@@ -386,3 +386,4 @@ This machine demonstrates:
 
 Some enumeration strategies, payload refinement, and documentation structure were assisted by AI-based tooling.  
 All exploitation steps were manually executed, validated, and adapted during the challenge.
+![AI Assisted](https://img.shields.io/badge/AI-assisted-blue?style=flat-square)
