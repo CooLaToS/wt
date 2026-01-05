@@ -1,4 +1,4 @@
-# GameShell2-HMV: [Gameshell](https://hackmyvm.eu/machines/machine.php?vm=Gameshell2)
+# GameShell2-HMV: [Gameshell2](https://hackmyvm.eu/machines/machine.php?vm=Gameshell2)
 
 ---
 
