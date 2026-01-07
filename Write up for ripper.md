@@ -122,7 +122,7 @@ id_rsa:bananas
 
 1 password hash cracked, 0 left
 ```
- #SSH
+## SSH
 ```bash
  ┌──(coolatos㉿CooLaToS)-[~/HMV/Ripper]
 └─$ ssh jack@$ip -i id_rsa
@@ -138,7 +138,7 @@ permitted by applicable law.
 Last login: Wed Jul 13 08:59:44 2022 from 10.1.1.11
 jack@ripper:~$ 
  ```
- # Enumeration
+ ## Enumeration
  Upload linpeas and pspy64
  ```bash
  ┌──(coolatos㉿CooLaToS)-[/opt/enumeration]
@@ -191,7 +191,7 @@ helder@ripper:/tmp$id
 uid=1001(helder) gid=1001(helder) euid=0(root) egid=0(root) groups=0(root),1001(helder)
 helder@ripper:/tmp$cd /root/
 ```
-# Root Flag
+## Root Flag
 ```bash
 helder@ripper:/root$ls
 root.txt
